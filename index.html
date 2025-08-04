@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Job Calendar Calculator</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+</head>
+<body>
+    <header>
+        <h1>Calendar</h1>
+    </header>
+
+    <main>
+        <div class="month">
+            <ul>
+                <li class="prev">&#10094;</li>
+                <li class="next">&#10095;</li>
+                <li id="currentMonth">August<br><span id="currentYear" style="font-size:18px">2025</span></li>
+            </ul>
+        </div>
+
+        <ul class="weekdays">
+            <li>Mo</li>
+            <li>Tu</li>
+            <li>We</li>
+            <li>Th</li>
+            <li>Fr</li>
+            <li>Sa</li>
+            <li>Su</li>
+        </ul>
+
+        <ul class="days"></ul>
+
+        <section id="calculator">
+            <h2 style="text-align:center;">Earnings Calculator</h2>
+            <div style="text-align:center; margin-bottom: 20px;">
+                <label for="wage">Hourly Wage: $</label>
+                <input type="number" id="wage" placeholder="e.g. 20" min="0">
+                <button id="overtimeToggle">Overtime: Off</button>
+            </div>
+            <div id="summary" style="text-align:center;">
+                <p>Total Hours: <span id="totalHours">0</span></p>
+                <p>Total Earnings: $<span id="totalEarnings">0.00</span></p>
+            </div>
+            <div style="text-align:center; margin-top: 15px;">
+                <button id="resetButton" style="background-color: #e74c3c; color: white; padding: 8px 12px; border: none; border-radius: 5px;">Reset Data</button>
+            </div>
+            <div style="text-align:center; margin-bottom: 10px;">
+                <label for="savePercent">Percent to Save: </label>
+                <input type="number" id="savePercent" value="0" min="0" max="100">%
+            </div>
+            <div id="split" style="text-align:center;">
+                <p>Saved: $<span id="savedAmount">0.00</span></p>
+                <p>Used: $<span id="usedAmount">0.00</span></p>
+            </div>
+
+        </section>
+    </main>
+</body>
+</html>
