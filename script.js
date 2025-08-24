@@ -14,14 +14,12 @@ const savePercentInput = document.getElementById("savePercent");
 const savedAmountSpan = document.getElementById("savedAmount");
 const usedAmountSpan = document.getElementById("usedAmount");
 
-
 function saveToLocalStorage() {
     localStorage.setItem("wage", wageInput.value);
     localStorage.setItem("overtime", JSON.stringify(overtimeEnabled));
     localStorage.setItem("hoursLogged", JSON.stringify(hoursLogged));
     localStorage.setItem("savePercent", savePercentInput.value);
 }
-
 
 function renderCalendar() {
     const year = currentDate.getFullYear();
@@ -89,16 +87,63 @@ function updateSummary() {
     totalEarningsSpan.textContent = totalEarnings.toFixed(2);
     savedAmountSpan.textContent = saved.toFixed(2);
     usedAmountSpan.textContent = used.toFixed(2);
+
+    // 🔹 Auto-update totals
+    calculateTotals();
 }
 
+function calculateTotals() {
+    const wage = parseFloat(wageInput.value) || 0;
+    let monthlyHours = 0, monthlyEarnings = 0;
+    let yearlyHours = 0, yearlyEarnings = 0;
+    let overallHours = 0, overallEarnings = 0;
+
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth() + 1; // 1-based
+
+    for (let date in hoursLogged) {
+        let [y, m, d] = date.split("-").map(Number);
+        let h = hoursLogged[date];
+        let earnings = 0;
+
+        if (overtimeEnabled && h > 8) {
+            earnings = 8 * wage + (h - 8) * wage * 1.5;
+        } else {
+            earnings = h * wage;
+        }
+
+        overallHours += h;
+        overallEarnings += earnings;
+
+        if (y === year) {
+            yearlyHours += h;
+            yearlyEarnings += earnings;
+            if (m === month) {
+                monthlyHours += h;
+                monthlyEarnings += earnings;
+            }
+        }
+    }
+
+    document.getElementById("monthlyHours").textContent = monthlyHours.toFixed(1);
+    document.getElementById("monthlyEarnings").textContent = monthlyEarnings.toFixed(2);
+    document.getElementById("yearlyHours").textContent = yearlyHours.toFixed(1);
+    document.getElementById("yearlyEarnings").textContent = yearlyEarnings.toFixed(2);
+    document.getElementById("overallHours").textContent = overallHours.toFixed(1);
+    document.getElementById("overallEarnings").textContent = overallEarnings.toFixed(2);
+
+    document.getElementById("totalsOutput").style.display = "block";
+}
 
 document.querySelector(".prev").addEventListener("click", () => {
     currentDate.setMonth(currentDate.getMonth() - 1);
     renderCalendar();
+    updateSummary();
 });
 document.querySelector(".next").addEventListener("click", () => {
     currentDate.setMonth(currentDate.getMonth() + 1);
     renderCalendar();
+    updateSummary();
 });
 
 overtimeBtn.addEventListener("click", () => {
@@ -118,12 +163,12 @@ savePercentInput.addEventListener("input", () => {
     saveToLocalStorage();
 });
 
-
 document.getElementById("resetButton").addEventListener("click", () => {
     if (confirm("Are you sure you want to reset all data?")) {
         localStorage.removeItem("wage");
         localStorage.removeItem("overtime");
         localStorage.removeItem("hoursLogged");
+        localStorage.removeItem("savePercent");
 
         wageInput.value = "";
         overtimeEnabled = false;
@@ -151,4 +196,3 @@ window.addEventListener("DOMContentLoaded", () => {
     renderCalendar();
     updateSummary();
 });
-
